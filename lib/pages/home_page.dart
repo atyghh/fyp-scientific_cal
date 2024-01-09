@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scientific/pages/button_values.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key});
@@ -9,11 +10,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String number1 = "";
-  String operand = "";
-  String number2 = "";
-  List<String> numberList = [];
-  List<String> operandList = [];
+  String equation = "0";
+  String result = "0";
+  String expression = "";
+  double equationFontSize = 38.0;
+  double resultFontSize = 48.0;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
         bottom: false,
         child: Column(
           children: [
-            // output
+            // equation
             Container(
               height: screenSize.height /
                   3, // Adjust the height for the output area
@@ -56,21 +57,34 @@ class _HomePageState extends State<HomePage> {
               child: SingleChildScrollView(
                 reverse: true,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    "$number1$operand$number2".isEmpty
-                        ? "0"
-                        : "$number1$operand$number2",
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.end,
+                  padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        equation,
+                        style: TextStyle(
+                          fontSize: equationFontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.end,
+                      ),
+                      Text(
+                        result,
+                        style: TextStyle(
+                          fontSize: resultFontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.end,
+                      )
+                    ],
                   ),
                 ),
               ),
             ),
+            // output
             // buttons
             Wrap(
               children: Btn.buttonValues
@@ -328,33 +342,46 @@ class _HomePageState extends State<HomePage> {
 
   void onBtnTap(String value) {
     // Implement your button tap logic here
-    // Complex functions
-    print("button pressed: $value");
-    // Basic operators
-    if (value == Btn.pi) {
-      value = "3.14159265359";
-    }
-    if (value == Btn.delete) {
-      delete();
-      return;
-    }
+    setState(() {
+      if (value == Btn.delete) {
+        delete();
+        return;
+      }
 
-    if (value == Btn.clear) {
-      clear();
-      return;
-    }
+      if (value == Btn.clear) {
+        clear();
+        return;
+      }
 
-    if (value == Btn.percentage) {
-      convertToPercentage();
-      return;
-    }
-    if (value == Btn.equal) {
-      calculate();
-      return;
-    }
+      if (value == Btn.equal) {
+        equationFontSize = 38.0;
+        resultFontSize = 48.0;
+
+        expression = equation;
+        expression = expression.replaceAll('x', '*');
+        expression = expression.replaceAll('÷', '/');
+
+        try {
+          Parser p = Parser();
+          Expression exp = p.parse(expression);
+
+          ContextModel cm = ContextModel();
+          result = '${exp.evaluate(EvaluationType.REAL, cm)}';
+        } catch (e) {
+          result = "Error";
+        }
+      } else {
+        equationFontSize = 48.0;
+        resultFontSize = 38.0;
+        if (equation == "0") {
+          equation = value;
+        } else {
+          equation = equation + value;
+        }
+      }
+    });
 
     //numbers are pressed
-    appendValue(value);
   }
 
   //Complex operators functions=================================================
@@ -362,139 +389,19 @@ class _HomePageState extends State<HomePage> {
   //Basic operators functions---------------------------------------------------
   //delete one from the end
   void delete() {
-    if (number2.isNotEmpty) {
-      //12233->1223
-      number2 = number2.substring(0, number2.length - 1);
-    } else if (operand.isNotEmpty) {
-      operand = "";
-    } else if (number1.isNotEmpty) {
-      number1 = number1.substring(0, number1.length - 1);
+    equationFontSize = 48.0;
+    resultFontSize = 38.0;
+    equation = equation.substring(0, equation.length - 1);
+    if (equation == "") {
+      equation = "0";
     }
-    setState(() {});
   }
 
   // Clears everything
   void clear() {
-    setState(() {
-      number1 = "";
-      operand = "";
-      number2 = "";
-    });
-  }
-
-  // Converts output to %
-  void convertToPercentage() {
-    //proper equation exists ex:434+324
-    if (number2.isNotEmpty) {
-      setState(() {
-        number2 = "${(double.parse(number2) / 100)}";
-      });
-    }
-
-    if (operand.isNotEmpty) {
-      //cannot be converted
-      return;
-    }
-    final number = double.parse(number1);
-    setState(() {
-      number1 = "${(number / 100)}";
-    });
-  }
-
-  //calculates the result
-  void calculate() {
-    if (number1.isEmpty) return;
-    if (operand.isEmpty) return;
-    if (number2.isEmpty) return;
-
-    final double num1 = double.parse(number1);
-    final double num2 = double.parse(number2);
-    var result = 0.0;
-    switch (operand) {
-      case Btn.add:
-        result = num1 + num2;
-        break;
-      case Btn.minus:
-        result = num1 - num2;
-        break;
-      case Btn.multiply:
-        result = num1 * num2;
-        break;
-      case Btn.divide:
-        result = num1 / num2;
-        break;
-      default:
-    }
-    setState(() {
-      number1 = "$result";
-
-      if (number1.endsWith(".0")) {
-        number1 = number1.substring(0, number1.length - 2);
-      }
-
-      operand = "";
-      number2 = "";
-    });
-  }
-
-  // Appends value to the end
-  void appendValue(String value) {
-    // number1 operand number 2
-    //if is operand and not "."
-    if (value != Btn.decimal && int.tryParse(value) == null) {
-      //operand pressed
-      if (operand.isNotEmpty && number2.isNotEmpty && value != Btn.minus) {
-        calculate();
-      }
-      if (value == Btn.minus) {
-        if (number1.isEmpty) {
-          number1 = value;
-        } else if (operand.isEmpty && number1 != Btn.minus) {
-          operand = value;
-        } else if (number2.isEmpty && operand.isNotEmpty) {
-          number2 = value;
-        } else if (number2 != Btn.minus) {
-          calculate();
-          operand = value;
-        } else {
-          return;
-        }
-      } else {
-        operand = value;
-      }
-    }
-    // Assign value to number1
-    else if (number1.isEmpty || operand.isEmpty) {
-      //check if value is "."
-      //avoid double dot
-      if (value == Btn.decimal && number1.contains(Btn.decimal)) {
-        return;
-      }
-      if (value == Btn.decimal && (number1.isEmpty || number1 == Btn.n0)) {
-        // Case: number1="" | "0"
-        value = "0.";
-      }
-      // Case when number1 = 0 append 123 ->  number1 = 0123
-      if (number1 == "0") {
-        number1 = "";
-      }
-      number1 += value;
-    } // Assign value to number2
-    else if (number2.isEmpty || operand.isNotEmpty) {
-      //check if value is "."
-      //avoid double dot
-      if (value == Btn.decimal && number2.contains(Btn.decimal)) {
-        return;
-      }
-      if (value == Btn.decimal && (number2.isEmpty || number2 == Btn.n0)) {
-        // number2="" | "0"
-        value = "0.";
-      }
-      if (number2 == "0") {
-        number2 = "";
-      }
-      number2 += value;
-    }
-    setState(() {});
+    equation = "0";
+    result = "0";
+    equationFontSize = 38.0;
+    resultFontSize = 48.0;
   }
 }
