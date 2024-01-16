@@ -361,7 +361,11 @@ class _HomePageState extends State<HomePage> {
     // Implement your button tap logic here
     setState(() {
       if (lastEqual && value != "=") {
-        if (value == '+' || value == "-" || value == "x" || value == "÷") {
+        if (value == '+' ||
+            value == "-" ||
+            value == "x" ||
+            value == "÷" ||
+            value == "%") {
           equation = "Ans";
         } else {
           equation = "0";
@@ -389,17 +393,18 @@ class _HomePageState extends State<HomePage> {
         answer = result;
         return;
       } else {
+        if (Btn.valToDisplay.containsKey(value)) {
+          value = Btn.valToDisplay[value]!;
+        }
         equationFontSize = 48.0;
         resultFontSize = 38.0;
-        if (equation == "0" && value != ".") {
+        if (equation == "0" && value != "." && value != "%") {
           equation = value;
         } else {
           equation = equation + value;
         }
       }
     });
-
-    //numbers are pressed
   }
 
   //Functions---------------------------------------------------
@@ -480,6 +485,8 @@ class _HomePageState extends State<HomePage> {
       expression = expression.replaceAll('$i(', '$i*(');
     }
     expression = expression.replaceAll('Ans(', 'Ans*(');
+
+    expression = expression.replaceAll("%", "/100");
     return expression;
   }
 }

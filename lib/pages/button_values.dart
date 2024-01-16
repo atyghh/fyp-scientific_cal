@@ -1,7 +1,7 @@
 class Btn {
   static const String mode = "Deg/Rad";
   static const String percentage = "%";
-  static const String inverse = "x^(-1)";
+  static const String inverse = "x^-1";
   static const String factorial = "x!";
   static const String power = "x^y";
   static const String root = "y√x";
@@ -19,12 +19,12 @@ class Btn {
   static const String permutation = "nPr";
   static const String calculation = "Calc";
   static const String constant = "Const";
-  static const String sine = "sin(";
-  static const String cosine = "cos(";
-  static const String tangent = "tan(";
-  static const String sineinv = "sin^-1(";
-  static const String cosinv = "cos^-1(";
-  static const String taninv = "tan^-1(";
+  static const String sine = "sin";
+  static const String cosine = "cos";
+  static const String tangent = "tan";
+  static const String sineinv = "sin^-1";
+  static const String cosinv = "cos^-1";
+  static const String taninv = "tan^-1";
   static const String A = "A";
   static const String B = "B";
   static const String D = "D";
@@ -103,4 +103,15 @@ class Btn {
     answer,
     equal,
   ];
+
+  static const Map<String, String> valToDisplay = {
+    "x!": "!",
+    "(-)": "-",
+    "sin": "sin(",
+    "cos": "cos(",
+    "tan": "tan(",
+    "sin^-1": "sin^-1(",
+    "cos^-1": "cos^-1(",
+    "tan^-1": "tan^-1("
+  };
 }
