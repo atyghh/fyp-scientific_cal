@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                         alignment: Alignment.topLeft,
                         child: (Text(
                           degMod ? "Deg" : "Rad",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.normal,
                             color: Colors.white,
@@ -398,7 +398,7 @@ class _HomePageState extends State<HomePage> {
         }
         equationFontSize = 48.0;
         resultFontSize = 38.0;
-        if (equation == "0" && value != "." && value != "%") {
+        if (equation == "0" && value != "." && value != "%" && value != "!") {
           equation = value;
         } else {
           equation = equation + value;
@@ -439,6 +439,9 @@ class _HomePageState extends State<HomePage> {
       Variable py = Variable("π");
       ContextModel cm = ContextModel()..bindVariable(py, Number(pi));
       result = '${exp.evaluate(EvaluationType.REAL, cm)}';
+      if (result == "-0.0") {
+        result = "0.0";
+      }
     } catch (e) {
       result = "Error";
     }
@@ -489,4 +492,7 @@ class _HomePageState extends State<HomePage> {
     expression = expression.replaceAll("%", "/100");
     return expression;
   }
+
+
 }
+
