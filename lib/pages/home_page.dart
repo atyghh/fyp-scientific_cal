@@ -402,9 +402,7 @@ class _HomePageState extends State<HomePage> {
     //numbers are pressed
   }
 
-  //Complex operators functions=================================================
-
-  //Basic operators functions---------------------------------------------------
+  //Functions---------------------------------------------------
   //delete one from the end
   void delete() {
     equationFontSize = 48.0;
@@ -426,8 +424,33 @@ class _HomePageState extends State<HomePage> {
   void calculate() {
     equationFontSize = 38.0;
     resultFontSize = 48.0;
+    //handle parenthesis
+    addParenthesis();
 
-    expression = equation;
+    expression = replaceForCal(equation);
+    try {
+      Parser p = Parser();
+      Expression exp = p.parse(expression);
+      Variable py = Variable("π");
+      ContextModel cm = ContextModel()..bindVariable(py, Number(pi));
+      result = '${exp.evaluate(EvaluationType.REAL, cm)}';
+    } catch (e) {
+      result = "Error";
+    }
+  }
+
+  void addParenthesis() {
+    String equationCopy1 = equation;
+    String equationCopy2 = equation;
+    int openCount = equationCopy1.split('(').length - 1;
+    int closeCount = equationCopy2.split(')').length - 1;
+    while (openCount - closeCount > 0) {
+      equation += ")";
+      openCount -= 1;
+    }
+  }
+
+  String replaceForCal(String expression) {
     expression = expression.replaceAll('Ans', answer);
     expression = expression.replaceAll('x', '*');
     expression = expression.replaceAll('÷', '/');
@@ -452,14 +475,11 @@ class _HomePageState extends State<HomePage> {
       expression = expression.replaceAll('$iπ', '$i*π');
     }
 
-    try {
-      Parser p = Parser();
-      Expression exp = p.parse(expression);
-      Variable py = Variable("π");
-      ContextModel cm = ContextModel()..bindVariable(py, Number(pi));
-      result = '${exp.evaluate(EvaluationType.REAL, cm)}';
-    } catch (e) {
-      result = "Error";
+    //handle problem like 8(9+7)
+    for (int i = 0; i <= 9; i++) {
+      expression = expression.replaceAll('$i(', '$i*(');
     }
+    expression = expression.replaceAll('Ans(', 'Ans*(');
+    return expression;
   }
 }
