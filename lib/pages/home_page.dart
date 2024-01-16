@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:scientific/pages/button_values.dart';
 import 'package:math_expressions/math_expressions.dart';
@@ -13,8 +15,11 @@ class _HomePageState extends State<HomePage> {
   String equation = "0";
   String result = "0";
   String expression = "";
+  String answer = "";
   double equationFontSize = 38.0;
   double resultFontSize = 48.0;
+  bool degMod = true;
+  bool lastEqual = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +66,18 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: (Text(
+                          degMod ? "Deg" : "Rad",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.start,
+                        )),
+                      ),
                       Text(
                         equation,
                         style: TextStyle(
@@ -343,6 +360,18 @@ class _HomePageState extends State<HomePage> {
   void onBtnTap(String value) {
     // Implement your button tap logic here
     setState(() {
+      if (lastEqual && value != "=") {
+        if (value == '+' || value == "-" || value == "x" || value == "÷") {
+          equation = "Ans";
+        } else {
+          equation = "0";
+        }
+        lastEqual = false;
+      }
+      if (value == Btn.mode) {
+        degMod = !degMod;
+        return;
+      }
       if (value == Btn.delete) {
         delete();
         return;
@@ -350,30 +379,19 @@ class _HomePageState extends State<HomePage> {
 
       if (value == Btn.clear) {
         clear();
+        lastEqual = false;
         return;
       }
 
       if (value == Btn.equal) {
-        equationFontSize = 38.0;
-        resultFontSize = 48.0;
-
-        expression = equation;
-        expression = expression.replaceAll('x', '*');
-        expression = expression.replaceAll('÷', '/');
-
-        try {
-          Parser p = Parser();
-          Expression exp = p.parse(expression);
-
-          ContextModel cm = ContextModel();
-          result = '${exp.evaluate(EvaluationType.REAL, cm)}';
-        } catch (e) {
-          result = "Error";
-        }
+        calculate();
+        lastEqual = true;
+        answer = result;
+        return;
       } else {
         equationFontSize = 48.0;
         resultFontSize = 38.0;
-        if (equation == "0") {
+        if (equation == "0" && value != ".") {
           equation = value;
         } else {
           equation = equation + value;
@@ -403,5 +421,45 @@ class _HomePageState extends State<HomePage> {
     result = "0";
     equationFontSize = 38.0;
     resultFontSize = 48.0;
+  }
+
+  void calculate() {
+    equationFontSize = 38.0;
+    resultFontSize = 48.0;
+
+    expression = equation;
+    expression = expression.replaceAll('Ans', answer);
+    expression = expression.replaceAll('x', '*');
+    expression = expression.replaceAll('÷', '/');
+    //handling trigo
+    expression = expression.replaceAll("sin^-1", "sAin");
+    expression = expression.replaceAll("cos^-1", "cAos");
+    expression = expression.replaceAll("tan^-1", "tAan");
+    if (degMod) {
+      expression = expression.replaceAll('cos(', 'cos(π/180*');
+      expression = expression.replaceAll('sin(', 'sin(π/180*');
+      expression = expression.replaceAll('tan(', 'tan(π/180*');
+    }
+    expression =
+        expression.replaceAll("sAin", degMod ? "180/π*arcsin" : "arcsin");
+    expression =
+        expression.replaceAll("cAos", degMod ? "180/π*arccos" : "arccos");
+    expression =
+        expression.replaceAll("tAan", degMod ? "180/π*arctan" : "arctan");
+
+    //handle pi
+    for (int i = 0; i <= 9; i++) {
+      expression = expression.replaceAll('$iπ', '$i*π');
+    }
+
+    try {
+      Parser p = Parser();
+      Expression exp = p.parse(expression);
+      Variable py = Variable("π");
+      ContextModel cm = ContextModel()..bindVariable(py, Number(pi));
+      result = '${exp.evaluate(EvaluationType.REAL, cm)}';
+    } catch (e) {
+      result = "Error";
+    }
   }
 }

@@ -1,4 +1,4 @@
-class Btn{
+class Btn {
   static const String mode = "Deg/Rad";
   static const String percentage = "%";
   static const String inverse = "x^(-1)";
@@ -19,12 +19,12 @@ class Btn{
   static const String permutation = "nPr";
   static const String calculation = "Calc";
   static const String constant = "Const";
-  static const String sine = "Sin";
-  static const String cosine = "Cos";
-  static const String tangent = "Tan";
-  static const String sineinv = "sin^(-1)";
-  static const String cosinv = "cos^(-1)";
-  static const String taninv = "tan^(-1)";
+  static const String sine = "sin(";
+  static const String cosine = "cos(";
+  static const String tangent = "tan(";
+  static const String sineinv = "sin^-1(";
+  static const String cosinv = "cos^-1(";
+  static const String taninv = "tan^-1(";
   static const String A = "A";
   static const String B = "B";
   static const String D = "D";
@@ -51,56 +51,56 @@ class Btn{
   static const String n8 = "8";
   static const String n9 = "9";
 
-static const List<String> buttonValues = [
-  mode,
-  percentage,
-  inverse,
-  factorial,
-  power,
-  root,
-  fraction,
-  conversion,
-  log2,
-  exponential,
-  naturallog,
-  exppower,
-  logarithm,
-  negative,
-  combination,
-  permutation,
-  calculation,
-  constant,
-  sine,
-  cosine,
-  tangent,
-  sineinv,
-  cosinv,
-  taninv,
-  openbracket,
-  closebracket,
-  A,
-  B,
-  D,
-  E,
-  n7,
-  n8,
-  n9,
-  delete,
-  clear,
-  n4,
-  n5,
-  n6,
-  multiply,
-  divide,
-  n1,
-  n2,
-  n3,
-  add,
-  minus,
-  n0,
-  decimal,
-  pi,
-  answer,
-  equal,
+  static const List<String> buttonValues = [
+    mode,
+    percentage,
+    inverse,
+    factorial,
+    power,
+    root,
+    fraction,
+    conversion,
+    log2,
+    exponential,
+    naturallog,
+    exppower,
+    logarithm,
+    negative,
+    combination,
+    permutation,
+    calculation,
+    constant,
+    sine,
+    cosine,
+    tangent,
+    sineinv,
+    cosinv,
+    taninv,
+    openbracket,
+    closebracket,
+    A,
+    B,
+    D,
+    E,
+    n7,
+    n8,
+    n9,
+    delete,
+    clear,
+    n4,
+    n5,
+    n6,
+    multiply,
+    divide,
+    n1,
+    n2,
+    n3,
+    add,
+    minus,
+    n0,
+    decimal,
+    pi,
+    answer,
+    equal,
   ];
 }
