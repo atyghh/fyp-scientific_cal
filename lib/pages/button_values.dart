@@ -9,7 +9,7 @@ class Btn {
   static const String closebracket = ")";
   static const String fraction = "a/b";
   static const String conversion = "S→D";
-  static const String log2 = "log";
+  static const String log2 = "log2";
   static const String exponential = "10^x";
   static const String naturallog = "ln";
   static const String exppower = "e^x";
@@ -28,7 +28,7 @@ class Btn {
   static const String A = "A";
   static const String B = "B";
   static const String D = "D";
-  static const String E = "E";
+  static const String comma = ",";
   static const String delete = "Del";
   static const String clear = "C";
   static const String multiply = "x";
@@ -81,7 +81,7 @@ class Btn {
     A,
     B,
     D,
-    E,
+    comma,
     n7,
     n8,
     n9,
@@ -112,6 +112,12 @@ class Btn {
     "tan": "tan(",
     "sin^-1": "sin^-1(",
     "cos^-1": "cos^-1(",
-    "tan^-1": "tan^-1("
+    "tan^-1": "tan^-1(",
+    "x^-1": "^-1",
+    "x^y": "^",
+    "y√x": "nrt(y,x)",
+    "log2": "log(2,x)",
+    "ln": "ln(",
+    "log(a)x": "log(a,x)",
   };
 }

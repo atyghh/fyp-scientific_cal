@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                                                       ? screenSize.width / 6
                                                                                                                                       : value == Btn.D
                                                                                                                                           ? screenSize.width / 6
-                                                                                                                                          : value == Btn.E
+                                                                                                                                          : value == Btn.comma
                                                                                                                                               ? screenSize.width / 6
                                                                                                                                               : (screenSize.width / 5),
                       height: value == Btn.mode
@@ -255,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                                                       ? screenSize.height / 20
                                                                                                                                       : value == Btn.D
                                                                                                                                           ? screenSize.height / 20
-                                                                                                                                          : value == Btn.E
+                                                                                                                                          : value == Btn.comma
                                                                                                                                               ? screenSize.height / 20
                                                                                                                                               : (screenSize.height / 15),
                       child: buildButton(value),
@@ -328,7 +328,7 @@ class _HomePageState extends State<HomePage> {
       Btn.A,
       Btn.B,
       Btn.D,
-      Btn.E,
+      Btn.comma,
     ].contains(value)
         ? Colors.blueGrey
         : [
@@ -492,7 +492,4 @@ class _HomePageState extends State<HomePage> {
     expression = expression.replaceAll("%", "/100");
     return expression;
   }
-
-
 }
-
