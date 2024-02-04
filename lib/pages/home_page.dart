@@ -16,10 +16,20 @@ class _HomePageState extends State<HomePage> {
   String result = "0";
   String expression = "";
   String answer = "";
+  String setVar = "";
   double equationFontSize = 38.0;
   double resultFontSize = 48.0;
+  Map<String, String> varMap = {
+    "A": "0",
+    "B": "0",
+    "C": "0",
+    "D": "0",
+  };
+  List<String> varList = [];
   bool degMod = true;
   bool lastEqual = false;
+  bool firstVar = false;
+  bool setVarMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                         textAlign: TextAlign.end,
                       ),
                       Text(
-                        result,
+                        setVarMode ? "$setVar = $result" : result,
                         style: TextStyle(
                           fontSize: resultFontSize,
                           fontWeight: FontWeight.bold,
@@ -360,13 +370,16 @@ class _HomePageState extends State<HomePage> {
   void onBtnTap(String value) {
     // Implement your button tap logic here
     setState(() {
-      if (lastEqual && value != "=") {
-        if (value == '+' ||
-            value == "-" ||
-            value == "x" ||
-            value == "÷" ||
-            value == "%") {
-          equation = "Ans";
+      if (lastEqual &&
+          value != Btn.equal &&
+          value != Btn.calculation &&
+          !setVarMode) {
+        if (value == Btn.add ||
+            value == Btn.minus ||
+            value == Btn.multiply ||
+            value == Btn.divide ||
+            value == Btn.percentage) {
+          equation = Btn.answer;
         } else {
           equation = "0";
         }
@@ -383,14 +396,16 @@ class _HomePageState extends State<HomePage> {
 
       if (value == Btn.clear) {
         clear();
-        lastEqual = false;
+        return;
+      }
+
+      if (value == Btn.calculation) {
+        varCalculate();
         return;
       }
 
       if (value == Btn.equal) {
         calculate();
-        lastEqual = true;
-        answer = result;
         return;
       } else {
         if (Btn.valToDisplay.containsKey(value)) {
@@ -398,10 +413,19 @@ class _HomePageState extends State<HomePage> {
         }
         equationFontSize = 48.0;
         resultFontSize = 38.0;
-        if (equation == "0" && value != "." && value != "%" && value != "!") {
-          equation = value;
+        if (setVar.isEmpty) {
+          if (equation == "0" &&
+              value != Btn.decimal &&
+              value != Btn.percentage &&
+              value != "!" &&
+              !varList.contains(value)) {
+            equation = value;
+          } else {
+            equation = equation + value;
+          }
         } else {
-          equation = equation + value;
+          firstVar ? result = value : result = result + value;
+          firstVar = false;
         }
       }
     });
@@ -412,9 +436,16 @@ class _HomePageState extends State<HomePage> {
   void delete() {
     equationFontSize = 48.0;
     resultFontSize = 38.0;
-    equation = equation.substring(0, equation.length - 1);
-    if (equation == "") {
-      equation = "0";
+    if (setVar.isEmpty) {
+      equation = equation.substring(0, equation.length - 1);
+      if (equation == "") {
+        equation = "0";
+      }
+    } else {
+      if (result.isEmpty) {
+        return;
+      }
+      result = result.substring(0, result.length - 1);
     }
   }
 
@@ -424,23 +455,61 @@ class _HomePageState extends State<HomePage> {
     result = "0";
     equationFontSize = 38.0;
     resultFontSize = 48.0;
+    lastEqual = false;
+    setVarMode = false;
+    setVar = "";
+  }
+
+  void varCalculate() {
+    equationFontSize = 48.0;
+    resultFontSize = 38.0;
+    for (String key in varMap.keys) {
+      if (equation.contains(key)) {
+        varList.add(key);
+      }
+    }
+    if (varList.isEmpty) {
+      calculate();
+      return;
+    }
+    setVar = varList.removeLast();
+    setVarMode = true;
+    firstVar = true;
+    result = varMap[setVar]!;
   }
 
   void calculate() {
-    equationFontSize = 38.0;
-    resultFontSize = 48.0;
     //handle parenthesis
     addParenthesis();
-
-    expression = replaceForCal(equation);
+    if (setVarMode) {
+      expression = replaceForCal(result);
+    } else {
+      lastEqual = true;
+      expression = replaceForCal(equation);
+      equationFontSize = 38.0;
+      resultFontSize = 48.0;
+    }
     try {
       Parser p = Parser();
       Expression exp = p.parse(expression);
       Variable py = Variable("π");
       ContextModel cm = ContextModel()..bindVariable(py, Number(pi));
       result = '${exp.evaluate(EvaluationType.REAL, cm)}';
+      answer = result;
       if (result == "-0.0") {
         result = "0.0";
+      }
+      if (setVar.isNotEmpty) {
+        varMap[setVar] = result;
+        if (varList.isNotEmpty) {
+          setVar = varList.removeLast();
+          result = varMap[setVar]!;
+          firstVar = true;
+        } else {
+          setVar = "";
+          setVarMode = false;
+          calculate();
+        }
       }
     } catch (e) {
       result = "Error";
@@ -462,6 +531,20 @@ class _HomePageState extends State<HomePage> {
     expression = expression.replaceAll('Ans', answer);
     expression = expression.replaceAll('x', '*');
     expression = expression.replaceAll('÷', '/');
+    //handle pi and variables
+    for (int i = 0; i <= 9; i++) {
+      expression = expression.replaceAll('$iπ', '$i*π');
+      expression = expression.replaceAll('$i' 'A', '$i*A');
+      expression = expression.replaceAll('$i' 'B', '$i*B');
+      expression = expression.replaceAll('$i' 'C', '$i*D');
+      expression = expression.replaceAll('A' '$i', '$i*A');
+      expression = expression.replaceAll('B' '$i', '$i*B');
+      expression = expression.replaceAll('D' '$i', '$i*D');
+    }
+    //handling variables
+    expression = expression.replaceAll("A", varMap["A"]!);
+    expression = expression.replaceAll("B", varMap["B"]!);
+    expression = expression.replaceAll("D", varMap["D"]!);
     //handling trigo
     expression = expression.replaceAll("sin^-1", "sAin");
     expression = expression.replaceAll("cos^-1", "cAos");
@@ -477,11 +560,6 @@ class _HomePageState extends State<HomePage> {
         expression.replaceAll("cAos", degMod ? "180/π*arccos" : "arccos");
     expression =
         expression.replaceAll("tAan", degMod ? "180/π*arctan" : "arctan");
-
-    //handle pi
-    for (int i = 0; i <= 9; i++) {
-      expression = expression.replaceAll('$iπ', '$i*π');
-    }
 
     //handle problem like 8(9+7)
     for (int i = 0; i <= 9; i++) {

@@ -116,8 +116,10 @@ class Btn {
     "x^-1": "^-1",
     "x^y": "^",
     "y√x": "nrt(y,x)",
-    "log2": "log(2,x)",
+    "log2": "log(2,",
+    "10^x": "10^",
     "ln": "ln(",
-    "log(a)x": "log(a,x)",
+    "e^x": "e^",
+    "log(a)x": "log(",
   };
 }
