@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:scientific/pages/button_values.dart';
+import 'button_values.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:scientific/pages/drawer_content.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key});
@@ -44,7 +45,16 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.black,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            color: Colors.white,
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },),
+        ),
       ),
+      drawer: SearchDrawer(),
       body: SafeArea(
         bottom: false,
         child: Column(
