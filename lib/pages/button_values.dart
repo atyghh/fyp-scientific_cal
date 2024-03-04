@@ -1,7 +1,7 @@
 class Btn {
   static const String mode = "Deg/Rad";
   static const String percentage = "%";
-  static const String inverse = "x^-1";
+  static const String inverse = "x⁻¹";
   static const String factorial = "x!";
   static const String power = "x^y";
   static const String root = "y√x";
@@ -22,9 +22,9 @@ class Btn {
   static const String sine = "sin";
   static const String cosine = "cos";
   static const String tangent = "tan";
-  static const String sineinv = "sin^-1";
-  static const String cosinv = "cos^-1";
-  static const String taninv = "tan^-1";
+  static const String sineinv = "sin⁻¹";
+  static const String cosinv = "cos⁻¹";
+  static const String taninv = "tan⁻¹";
   static const String A = "A";
   static const String B = "B";
   static const String D = "D";
@@ -110,14 +110,16 @@ class Btn {
     "sin": "sin(",
     "cos": "cos(",
     "tan": "tan(",
-    "sin^-1": "sin^-1(",
-    "cos^-1": "cos^-1(",
-    "tan^-1": "tan^-1(",
-    "x^-1": "^-1",
+    "sin⁻¹": "sin⁻¹(",
+    "cos⁻¹": "cos⁻¹(",
+    "tan⁻¹": "tan⁻¹(",
+    "x⁻¹": "⁻¹",
     "x^y": "^",
     "y√x": "nrt(y,x)",
-    "log2": "log(2,x)",
+    "log2": "log(2,",
+    "10^x": "10^",
     "ln": "ln(",
-    "log(a)x": "log(a,x)",
+    "e^x": "e^",
+    "log(a)x": "log(",
   };
 }
