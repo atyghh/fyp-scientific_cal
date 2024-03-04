@@ -51,7 +51,8 @@ class _HomePageState extends State<HomePage> {
             color: Colors.white,
             onPressed: () {
               Scaffold.of(context).openDrawer();
-            },),
+            },
+          ),
         ),
       ),
       drawer: SearchDrawer(),
@@ -541,6 +542,8 @@ class _HomePageState extends State<HomePage> {
     expression = expression.replaceAll('Ans', answer);
     expression = expression.replaceAll('x', '*');
     expression = expression.replaceAll('÷', '/');
+    expression = expression.replaceAll('⁻¹', '^-1');
+
     //handle pi and variables
     for (int i = 0; i <= 9; i++) {
       expression = expression.replaceAll('$iπ', '$i*π');
@@ -556,20 +559,17 @@ class _HomePageState extends State<HomePage> {
     expression = expression.replaceAll("B", varMap["B"]!);
     expression = expression.replaceAll("D", varMap["D"]!);
     //handling trigo
-    expression = expression.replaceAll("sin^-1", "sAin");
-    expression = expression.replaceAll("cos^-1", "cAos");
-    expression = expression.replaceAll("tan^-1", "tAan");
     if (degMod) {
       expression = expression.replaceAll('cos(', 'cos(π/180*');
       expression = expression.replaceAll('sin(', 'sin(π/180*');
       expression = expression.replaceAll('tan(', 'tan(π/180*');
     }
     expression =
-        expression.replaceAll("sAin", degMod ? "180/π*arcsin" : "arcsin");
+        expression.replaceAll("sin⁻¹", degMod ? "180/π*arcsin" : "arcsin");
     expression =
-        expression.replaceAll("cAos", degMod ? "180/π*arccos" : "arccos");
+        expression.replaceAll("cos⁻¹", degMod ? "180/π*arccos" : "arccos");
     expression =
-        expression.replaceAll("tAan", degMod ? "180/π*arctan" : "arctan");
+        expression.replaceAll("tan⁻¹", degMod ? "180/π*arctan" : "arctan");
 
     //handle problem like 8(9+7)
     for (int i = 0; i <= 9; i++) {

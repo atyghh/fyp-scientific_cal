@@ -8,13 +8,14 @@ import 'package:scientific/pages/single_complex.dart';
 import 'package:scientific/pages/simultaneous_equation_solver.dart';
 import 'package:scientific/pages/single_matrix_equations.dart';
 import 'package:scientific/pages/matrix_equation_solver_page.dart';
+import 'package:scientific/pages/unit_converter_page.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp ({super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +25,11 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home_page': (context) => HomePage(),
         '/polynomial_equation_solver_page': (context) => PolynomialSolverPage(),
+        '/unitsConversion': (context) => UnitListPage(),
         '/matrix_solver': (context) => MatrixSolverPage(),
         '/complex_equation_solver': (context) => ComplexSolverPage(),
-        '/simultaneous_equation_solver': (context) => SimultaneousEquationsSolverPage(),
+        '/simultaneous_equation_solver': (context) =>
+            SimultaneousEquationsSolverPage(),
       },
     );
   }
